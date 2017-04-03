@@ -1,0 +1,21 @@
+{
+  "name": "bread_scraps",
+  "version": "1.0.0",
+  "description": "REST API to get the saddest song by artist",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hugo Medina",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.5",
+    "body-parser": "~1.0.1",
+    "express": "~4.0.0",
+    "jsdom": "^9.12.0",
+    "lodash": "^4.17.4",
+    "mongoose": "~3.6.13",
+    "request": "^2.81.0",
+    "text-miner": "^1.0.5"
+  }
+}
