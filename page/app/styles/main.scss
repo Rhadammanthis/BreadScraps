@@ -4,6 +4,53 @@
 body {
   font-family: Helvetica, sans-serif;
   color: $font-color--dark;
-  background-color: $background--light;
-  padding: $half-space;
+  background-color: #191414;
 }
+
+p{
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+}
+
+md-toolbar.admin {
+  background-color: #FF7F00
+}
+
+.accent {
+  background-color: #FF7F00;
+}
+
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+}
+
+.header {
+  color: white;
+  font-size: 85px;
+}
+
+.spotify-button{
+  background-color: #1DB954;
+  border-radius: 35px;
+  padding: 18px;
+  font-size: 20px;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.spotify-button:hover {
+  background-color: #22d661;
+}
+
+.spotify-button:active {
+  background-color: #189c47;
+}
+
+.spotify-button:focus {
+    outline: none;
+}
+

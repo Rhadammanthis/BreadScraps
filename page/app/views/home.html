@@ -1,10 +1,53 @@
-<h1 class="heading -large">{{ home.title | ExampleFilter }}</h1>
+<div layout="row" layout-align="center center">
+    <h1 class="font-pacifico header">Bread Scraps</h1>
+</div>
+<div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
+<div style="margin: 60px;" layout="row" layout-align="center center">
+    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean scelerisque turpis turpis, non lacinia eros lacinia id.
+        Maecenas nibh ipsum, laoreet vel augue ac, hendrerit posuere odio. Morbi et porttitor arcu. Pellentesque lobortis
+        odio a ipsum tincidunt tincidunt. Morbi id tellus finibus, tincidunt nisl hendrerit, sodales urna. Integer pretium
+        porttitor ligula, et consectetur eros gravida ac. Pellentesque habitant morbi tristique senectus et netus et malesuada
+        fames ac turpis egestas. Maecenas eget est et sem varius lobortis. Lorem ipsum dolor sit amet, consectetur adipiscing
+        elit. Pellentesque pellentesque metus vitae eros condimentum pharetra. Morbi sed tincidunt leo, sit amet pulvinar
+        urna. Morbi varius turpis ipsum, a cursus odio mollis eget. Nunc sem nibh, pharetra eu ultrices at, dictum et lectus.
+        Vestibulum ac diam mauris.
+    </p>
+</div>
+<div style="margin-top: 60px;" layout="row" layout-align="center center">
+    <div style="width: 270px;" ng-click="home.logToSpotify()" class="spotify-button" layout="row">
+        <img src="images/spotify-icon-white.png" style="width:50px; height:50px;" />
+        <span flex> </span>
+        <div layout="column" layout-align="center center">
+            Login to Spotify
+        </div>
+    </div>
+</div>
+<div style="margin-top: 60px;" layout="row" layout-align="center center">
+    <md-input-container flex>
+        <label>Name</label>
+        <input ng-model="home.search">
+    </md-input-container>
+    <md-select flex="80" placeholder="Nombre" ng-model="home.lol" md-on-open="home.loadPatients()" md-on-close="home.processPatientData()">
+        <md-select-label><img src="{{ currOption.image }}" /></md-select-label>
+        <md-option style="height: 100px" ng-value="artist" ng-repeat="artist in home.artists">
+            <img style="height: 80px; width: 80px;" src="{{ artist.images[2].url }}" /> {{artist.name}}
+        </md-option>
+    </md-select>
+</div>
 
-<h3 class="heading -medium">Here is a fancy number served up courtesy of Angular: <span class="number-example">{{ home.number }}</span></h3>
-
-<img src="images/angular.png" height="100" />
-<img src="images/gulp.png" height="100" />
-<img src="images/browserify.png" height="100" />
-
-<hr/>
-<div example-directive title="WOW!" click-message="You clicked me!">Directive is not loaded.</div>
+<!--<md-toolbar class="admin">
+    <div class="md-toolbar-tools">
+        <h2 flex>Bread Scraps</h2>
+    </div>
+</md-toolbar>
+<md-button class="md-primary">Primary (md-noink)</md-button>
+<md-input-container>
+    <label>Name</label>
+    <input ng-model="home.search">
+</md-input-container>
+<md-select placeholder="Nombre" ng-model="home.lol" md-on-open="home.loadPatients()" md-on-close="home.processPatientData()">
+    <md-select-label><img src="{{ currOption.image }}" /></md-select-label>
+    <md-option style="height: 100px" ng-value="artist" ng-repeat="artist in home.artists">
+        <img style="height: 80px; width: 80px;" src="{{ artist.images[2].url }}" /> {{artist.name}}
+    </md-option>
+</md-select>-->
