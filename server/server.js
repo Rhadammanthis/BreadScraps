@@ -26,6 +26,46 @@ var spotifyToken;
 var tokenExpired = false;
 var results;
 
+router.post('/lol', (req, res) => {
+    console.log('lol')
+
+    res.send('lol')
+
+})
+
+
+var client_id = '749748f5ea93499ea4177c896e6adef8'; // Your client id
+var client_secret = '987de9323c0140cbbc2005bd29d73d54'; // Your secret
+
+router.post('/auth', (req, res) => {
+
+    var code = req.body.code
+
+    var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        headers: {
+            'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        },
+        form: {
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: 'http://localhost:3000/auth'
+        },
+        json: true
+    };
+
+    request.post(authOptions, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+
+            // use the access token to access the Spotify Web API
+            var token = body.access_token;
+            console.log("-----------------------------token------------------------")
+            console.log(body)
+            res.set('Access-Control-Allow-Origin', '*').status(200).json(body)
+        }
+    });
+})
+
 
 router.post('/search', (req, res) => {
 
