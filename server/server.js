@@ -26,14 +26,6 @@ var spotifyToken;
 var tokenExpired = false;
 var results;
 
-router.post('/lol', (req, res) => {
-    console.log('lol')
-
-    res.send('lol')
-
-})
-
-
 var client_id = '749748f5ea93499ea4177c896e6adef8'; // Your client id
 var client_secret = '987de9323c0140cbbc2005bd29d73d54'; // Your secret
 
@@ -59,125 +51,135 @@ router.post('/auth', (req, res) => {
 
             // use the access token to access the Spotify Web API
             var token = body.access_token;
-            console.log("-----------------------------token------------------------")
-            console.log(body)
+            res.set('Access-Control-Allow-Origin', '*').status(200).json(body)
+        }
+    });
+})
+
+router.post('/refresh', (req, res) => {
+
+    var token = req.body.token
+
+    var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        headers: {
+            'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        },
+        form: {
+            grant_type: 'refresh_token',
+            refresh_token: token
+        },
+        json: true
+    };
+
+    request.post(authOptions, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+
             res.set('Access-Control-Allow-Origin', '*').status(200).json(body)
         }
     });
 })
 
 
-router.post('/search', (req, res) => {
+router.post('/getSaddestSongs', (req, res) => {
 
     console.time("call");
     console.time("complete");
-    spotifyToken = req.header("SpotifyAuth")
+    spotifyToken = req.body.spotifyToken
+    artist = req.body.artistName
+    var artistId = req.body.artistId
 
     //Checks of the request was a Header with the Spotify API token
     if (!spotifyToken || spotifyToken === "" || spotifyToken === " ")
-        res.status(400).json({ error: { status: 400, message: 'Spotify OAuth Token missing' } })
+        res.set('Access-Control-Allow-Origin', '*').status(400).json({ error: { status: 400, message: 'Spotify OAuth Token missing' } })
 
-    //Extracts the name of the artist from the body of the request
-    var artist = req.body.artist.replace(/ /g, '+')
 
     //Checks if the request is empty
-    if (!artist || artist === "" || artist === " ")
-        res.status(400).json({ error: { status: 400, message: 'Body should have an \'artist\' property' } })
+    if (!artistId || artistId === "" || artistId === " ")
+        res.set('Access-Control-Allow-Origin', '*').status(400).json({ error: { status: 400, message: 'Body should have an \'artist\' property' } })
 
     //Checks if the request specified the result array's size. It's 10 by default
-    results = req.query.results ? req.query.results : 10
+    results = req.body.results ? req.body.results : 10
+
 
     var options = {
         method: 'GET',
-        url: 'https://api.spotify.com/v1/search',
-        qs: { q: artist, type: 'artist' }
+        url: 'https://api.spotify.com/v1/artists/' + artistId + '/albums',
+        qs: { album_type: 'album,single', market: 'US' }
     };
 
     request(options, (error, response, body) => {
         if (error) throw new Error(error);
 
-        artist = JSON.parse(body).artists.items[0].name
+        var albums = JSON.parse(body).items
 
-        var artistId = JSON.parse(body).artists.items[0].id
+        console.time("getSongs");
 
-        var options = {
-            method: 'GET',
-            url: 'https://api.spotify.com/v1/artists/' + artistId + '/albums',
-            qs: { album_type: 'album', market: 'US' }
-        };
+        async.map(albums, getAlbums, (asyncError, asyncResults) => {
+            if (asyncError) {
+                res.set('Access-Control-Allow-Origin', '*').status(asyncError.error.status).json(asyncError);
+            } else {
+                console.log('Total albums: ', asyncResults.length);
+                var songs = []
+                console.timeEnd("getSongs");
+                asyncResults.forEach((album) => {
+                    if (album != null)
+                        album.songs.forEach((song) => {
 
-        request(options, (error, response, body) => {
-            if (error) throw new Error(error);
+                            song.artist = artist
+                            songs.push(song)
+                        })
+                })
 
-            var albums = JSON.parse(body).items
+                console.log('Artist:', artist)
+                console.log('Total songs: ', songs.length);
+                console.log('Total non empty songs: ', songs.filter((song) => {
+                    if (song.hasOwnProperty('valence') && song.valence > 0)
+                        return true
+                    return false
+                }).length);
+                console.log('Total real songs: ', _.uniqBy(songs.filter((song) => {
+                    if (song.hasOwnProperty('valence') && song.valence > 0)
+                        return true
+                    return false
+                }), 'name').length);
 
-            console.time("getSongs");
+                console.time("filter");
 
-            async.map(albums, getAlbums, (asyncError, asyncResults) => {
-                if (asyncError) {
-                    res.status(asyncError.error.status).json(asyncError);
-                } else {
-                    console.log('Total albums: ', asyncResults.length);
-                    var songs = []
-                    console.timeEnd("getSongs");
-                    asyncResults.forEach((album) => {
-                        if (album != null)
-                            album.songs.forEach((song) => {
+                var saddestSongs = _.uniqBy(songs.filter((song) => {
+                    if (song.hasOwnProperty('valence') && song.valence > 0 && !(song.name.includes("Rmx") || song.name.includes("RMX") || song.name.includes("Remix") || song.name.includes("REMIX") || song.name.includes("Live") || song.name.includes("Reprise")))
+                        return true
+                    return false
+                }), 'name').sort((a, b) => {
+                    return a.valence - b.valence;
+                })
 
-                                song.artist = artist
-                                songs.push(song)
-                            })
-                    })
+                console.timeEnd("filter");
 
-                    console.log('Artist:', artist)
-                    console.log('Total songs: ', songs.length);
-                    console.log('Total non empty songs: ', songs.filter((song) => {
-                        if (song.hasOwnProperty('valence') && song.valence > 0)
-                            return true
-                        return false
-                    }).length);
-                    console.log('Total real songs: ', _.uniqBy(songs.filter((song) => {
-                        if (song.hasOwnProperty('valence') && song.valence > 0)
-                            return true
-                        return false
-                    }), 'name').length);
+                console.timeEnd("call");
 
-                    console.time("filter");
+                // res.json(saddestSongs)
 
-                    var saddestSongs = _.uniqBy(songs.filter((song) => {
-                        if (song.hasOwnProperty('valence') && song.valence > 0 && !(song.name.includes("Rmx") || song.name.includes("RMX") || song.name.includes("Remix") || song.name.includes("REMIX") || song.name.includes("Live")))
-                            return true
-                        return false
-                    }), 'name').sort((a, b) => {
-                        return a.valence - b.valence;
-                    })
+                async.map(saddestSongs, getSaddestSongs, (qError, qResult) => {
+                    if (qError)
+                        res.json.qResult
+                    else {
+                        console.timeEnd("complete");
+                        res.set('Access-Control-Allow-Origin', '*').status(200).json(qResult.filter((song) => {
+                            if (song && song != null && song.lyrics)
+                                return true
+                            return false
+                        }).sort((a, b) => {
+                            return b.gloomIndex - a.gloomIndex;
+                        }).slice(0, results > saddestSongs.length ? saddestSongs.length : results));
+                    }
+                })
 
-                    console.timeEnd("filter");
-
-                    console.timeEnd("call");
-
-                    // res.json(saddestSongs)
-
-                    async.map(saddestSongs.slice(0, results > saddestSongs.length ? saddestSongs.length : results), getSaddestSongs, (qError, qResult) => {
-                        if (qError)
-                            res.json.qResult
-                        else {
-                            console.timeEnd("complete");
-                            res.json(qResult.filter((song) => {
-                                if (song && song != null && song.lyrics)
-                                    return true
-                                return false
-                            }).sort((a, b) => {
-                                return b.gloomIndex - a.gloomIndex;
-                            }));
-                        }
-                    })
-
-                }
-            });
-
+            }
         });
+
     });
+    // });
 })
 
 var getAlbums = (album, callback) => {
@@ -188,15 +190,17 @@ var getAlbums = (album, callback) => {
 
     var options = {
         method: 'GET',
-        url: 'https://api.spotify.com/v1/albums/' + album.id + '/tracks'
+        url: 'https://api.spotify.com/v1/albums/' + album.id
     };
 
     request(options, (error, response, body) => {
         if (error) return callback(error);
+        // console.log('===> 3')
 
         // console.log('========>' + album.name)
 
-        var songs = JSON.parse(body).items
+        var album = { name: JSON.parse(body).name, imageUrl: JSON.parse(body).images[1].url }
+        var songs = JSON.parse(body).tracks.items
 
         var ids = "";
         songs.forEach((song) => {
@@ -227,6 +231,8 @@ var getAlbums = (album, callback) => {
                     songData.id = songs[i].id;
                     songData.duration = songs[i].duration_ms / 1000;
                     songData.valence = features.valence
+                    songData.album = album
+                    songData.externalUrl = songs[i].external_urls.spotify;
 
                     rAlbum.songs.push(songData)
                 })
