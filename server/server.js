@@ -24,7 +24,10 @@ var router = express.Router();
 //Auxiliar variables to process Search request
 var spotifyToken;
 var tokenExpired = false;
+// var analizeWholeSet;
+var factorNoLyrics;
 var results;
+var analyseSize;
 
 var client_id = '749748f5ea93499ea4177c896e6adef8'; // Your client id
 var client_secret = '987de9323c0140cbbc2005bd29d73d54'; // Your secret
@@ -100,7 +103,11 @@ router.post('/getSaddestSongs', (req, res) => {
 
     //Checks if the request specified the result array's size. It's 10 by default
     results = req.body.results ? req.body.results : 10
+    factorNoLyrics = req.body.factor_no_lyrics ? (req.body.factor_no_lyrics == 'true') : false
+    analyseSize = req.body.analyse_set_size ? req.body.analyse_set_size : 15
+    analizeWholeSet = req.body.thorough_analysis ? (req.body.thorough_analysis == 'true') : true
 
+    console.log('Factor no lyrics', factorNoLyrics)
 
     var options = {
         method: 'GET',
@@ -131,18 +138,18 @@ router.post('/getSaddestSongs', (req, res) => {
                         })
                 })
 
-                console.log('Artist:', artist)
-                console.log('Total songs: ', songs.length);
-                console.log('Total non empty songs: ', songs.filter((song) => {
-                    if (song.hasOwnProperty('valence') && song.valence > 0)
-                        return true
-                    return false
-                }).length);
-                console.log('Total real songs: ', _.uniqBy(songs.filter((song) => {
-                    if (song.hasOwnProperty('valence') && song.valence > 0)
-                        return true
-                    return false
-                }), 'name').length);
+                // console.log('Artist:', artist)
+                // console.log('Total songs: ', songs.length);
+                // console.log('Total non empty songs: ', songs.filter((song) => {
+                //     if (song.hasOwnProperty('valence') && song.valence > 0)
+                //         return true
+                //     return false
+                // }).length);
+                // console.log('Total real songs: ', _.uniqBy(songs.filter((song) => {
+                //     if (song.hasOwnProperty('valence') && song.valence > 0)
+                //         return true
+                //     return false
+                // }), 'name').length);
 
                 console.time("filter");
 
@@ -158,7 +165,10 @@ router.post('/getSaddestSongs', (req, res) => {
 
                 console.timeEnd("call");
 
-                // res.json(saddestSongs)
+                if(analizeWholeSet === false)
+                    saddestSongs = saddestSongs.slice(0, analyseSize);
+
+                console.log('Array size: ', saddestSongs.length)
 
                 async.map(saddestSongs, getSaddestSongs, (qError, qResult) => {
                     if (qError)
@@ -166,7 +176,7 @@ router.post('/getSaddestSongs', (req, res) => {
                     else {
                         console.timeEnd("complete");
                         res.set('Access-Control-Allow-Origin', '*').status(200).json(qResult.filter((song) => {
-                            if (song && song != null && song.lyrics)
+                            if (song && song != null)
                                 return true
                             return false
                         }).sort((a, b) => {
@@ -279,16 +289,36 @@ var getSaddestSongs = (song, callback) => {
                             song = scoreLyrics(song)
                             return callback(null, song)
                         }
-                        else
-                            return callback(null, null)
+                        else {
+                            if (factorNoLyrics === true) {
+                                song = scoreLyrics(song)
+                                return callback(null, song)
+                            }
+                            else
+                                return callback(null, null)
+                        }
                     }
                 );
+            }
+            else {
+                // song = scoreLyrics(song)
+                if (factorNoLyrics === true) {
+                    song = scoreLyrics(song)
+                    return callback(null, song)
+                }
+                else
+                    return callback(null, null)
+            }
+        }
+        else {
+            // song = scoreLyrics(song)
+            if (factorNoLyrics === true) {
+                song = scoreLyrics(song)
+                return callback(null, song)
             }
             else
                 return callback(null, null)
         }
-        else
-            return callback(null, song)
 
     });
 }
@@ -313,36 +343,45 @@ var loadSadWords = (file) => {
 var sadWords = loadSadWords('NRC-Emotion-Lexicon-Wordlevel-v0.92.txt');
 
 var scoreLyrics = (song) => {
-    var text = song.lyrics.replace(/\(|\)|:|\'/g, '');
-    var corpus = new tm.Corpus([]);
 
-    corpus.addDoc(text);
-    corpus
-        .clean()
-        .removeNewlines()
-        .removeInterpunctuation()
-        .removeInvalidCharacters()
-        .removeWords(tm.STOPWORDS.EN)
-        .toLower()
-        .stem('Lancaster');
+    if (song.lyrics) {
+        var text = song.lyrics.replace(/\(|\)|:|\'/g, '');
+        var corpus = new tm.Corpus([]);
 
-    var terms = new tm.Terms(corpus);
-    var vocabulary = terms.vocabulary;
-    var counts = terms.dtm[0];
-    var wordCount = counts.reduce((a, b) => a + b, 0);
-    var sadWordCount = 0;
+        corpus.addDoc(text);
+        corpus
+            .clean()
+            .removeNewlines()
+            .removeInterpunctuation()
+            .removeInvalidCharacters()
+            .removeWords(tm.STOPWORDS.EN)
+            .toLower()
+            .stem('Lancaster');
 
-    vocabulary.forEach((word, i) => {
-        if (sadWords.indexOf(word) > -1) {
-            sadWordCount = sadWordCount + (1 * counts[i]);
-        }
-    });
+        var terms = new tm.Terms(corpus);
+        var vocabulary = terms.vocabulary;
+        var counts = terms.dtm[0];
+        var wordCount = counts.reduce((a, b) => a + b, 0);
+        var sadWordCount = 0;
 
-    console.log('%s sad out of %s in %s, so thats a %s', sadWordCount, wordCount, song.name, (sadWordCount / wordCount))
-    song.pctSad = sadWordCount / wordCount
-    song.lyricalDensity = wordCount / song.duration
-    song.gloomIndex = ((1 - song.valence) + (song.pctSad * (1 + song.lyricalDensity))) / 2
-    return song
+        vocabulary.forEach((word, i) => {
+            if (sadWords.indexOf(word) > -1) {
+                sadWordCount = sadWordCount + (1 * counts[i]);
+            }
+        });
+
+        console.log('%s sad out of %s in %s, so thats a %s', sadWordCount, wordCount, song.name, (sadWordCount / wordCount))
+        song.pctSad = sadWordCount / wordCount
+        song.lyricalDensity = wordCount / song.duration
+        song.gloomIndex = ((1 - song.valence) + (song.pctSad * (1 + song.lyricalDensity))) / 2
+        // console.log('Gloom index for lyrics %s: %2', song.name, song.gloomIndex)
+        return song
+    }
+    else {
+        song.gloomIndex = ((1 - song.valence) + (0.001 * (1 + 0.001))) / 2
+        console.log('Gloom index for non lyrics %s: %2', song.name, song.gloomIndex)
+        return song
+    }
 }
 
 var normalizeText = (text) => {
