@@ -32,6 +32,12 @@ angular.module('app').constant('AppSettings', constants);
 
 angular.module('app').config(onConfig);
 
+angular.module('app').filter('trusted', ['$sce', function ($sce) {
+    return function(url) {
+        return $sce.trustAsResourceUrl(url);
+    };
+}]);
+
 angular.module('app').run(onRun);
 
 angular.bootstrap(document, ['app'], {

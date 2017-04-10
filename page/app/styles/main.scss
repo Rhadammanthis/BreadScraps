@@ -7,9 +7,68 @@ body {
   background-color: #191414;
 }
 
+md-progress-circular svg path { 
+  stroke: #FF7F00 ; 
+}
+
+.material-icons.md-48 { 
+  font-size: 48px; 
+}
+
+.material-icons.orange { 
+  color: #FF7F00;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; 
+}
+
+.material-icons:hover{
+  color: #ff9022;
+}
+
+.material-icons:active{
+  color: #dd6e00;
+}
+
+.material-icons:focus {
+  outline: none;
+}
+
+.separator-vertical{
+  background-color: #FF7F00; 
+  height: 300px; 
+  width: 2px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.separator-horizontal{
+  background-color: #FF7F00; 
+  height: 2px; 
+  margin-left: 25%; 
+  margin-right: 25%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.main-body{
+  background-color: #191414;
+}
+
 p{
   color: white;
   font-family: 'Open Sans', sans-serif;
+}
+
+.simple-text{
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.custom-text{
+  color: white;
+  font-family: 'Pacifico', cursive;
 }
 
 md-toolbar.admin {
@@ -29,10 +88,15 @@ md-toolbar.admin {
   font-size: 85px;
 }
 
+.sub-header {
+  color: white;
+  font-size: 55px;
+}
+
 .spotify-button{
   background-color: #1DB954;
   border-radius: 35px;
-  padding: 18px;
+  padding: 15px;
   font-size: 20px;
   color: white;
   font-family: 'Open Sans', sans-serif;
@@ -51,6 +115,174 @@ md-toolbar.admin {
 }
 
 .spotify-button:focus {
+  outline: none;
+}
+
+.rounded {
+	// border: 1px solid #ccc;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 20px;
+	-moz-box-shadow: 2px 2px 3px #666;
+	-webkit-box-shadow: 2px 2px 3px #666;
+	box-shadow: 2px 2px 3px #666;
+	font-size: 20px;
+	padding: 4px 7px;
+	outline: 0;
+	-webkit-appearance: none;
+  background-color: white;
+}
+
+.input-rounded {
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	font-size: 20px;
+	padding: 4px 7px;
+	outline: 0;
+  border: 0;
+	-webkit-appearance: none;
+  outline: none;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.input-rounded:focus {
+	outline: none;
+}
+
+.songs-container{
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
+
+md-content{
+  background-color: #191414;
+  overflow: hidden;
+}
+
+md-content:hover{
+  overflow-y:scroll;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.5);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,.75);
+}
+
+.c1::-webkit-scrollbar-track {
+    background-color: #191414;
+}
+
+.artist-container{
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.artist-container:hover{
+  border:1px solid #FF7F00;
+  border-radius: 20px;
+}
+
+.artist-container:active {
+  background-color: #dd6e00;
+}
+
+.artist-container:focus {
     outline: none;
 }
 
+.refresh-button{
+  background-color: #FF7F00;
+  border-radius: 35px;
+  padding: 10px;
+  font-size: 20px;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.refresh-button:hover {
+  background-color: #ff9022;
+}
+
+.refresh-button:active {
+  background-color: #dd6e00;
+}
+
+.refresh-button:focus {
+    outline: none;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+pre {
+    font-size: 13px;
+}
+pre {
+    font-size: 13px;
+}
+pre {
+    font-size: 14px;
+}
+pre {
+    display: block;
+    padding: 11.5px;
+    margin: 0 0 12px;
+    font-size: 15px;
+    line-height: 1.5;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #616467;
+    background-color: #fafafa;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+}
+
+thead{
+  background-color: #FF7F00;
+}
+
+th{
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+td{
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+td.key{
+  vertical-align: top; 
+  text-align: left;
+}
+
+tr:nth-child(even){
+  background-color: #221c1c;
+  color: white
+}
+
+tr{
+  color: white;
+}
