@@ -100,17 +100,19 @@
     </div>
     <div style="margin-top: 60px; margin-left: 140px; margin-right: 140px;" layout="column">
         <p>
-            All right so, it fairly simple. A couple of months ago I read an <a href="http://rcharlie.com/2017-02-16-fitteR-happieR/#analysis">article</a>            by this guy Charly Thompson who happens to be a data analyst. In there he described a formula to analyse the
+            All right so, it fairly simple. A couple of months ago I read an <a href="http://rcharlie.com/2017-02-16-fitteR-happieR/#analysis">article</a>
+            by this guy Charly Thompson who happens to be a data analyst. In there he described a formula to analyse the
             sentiment of a certain song by using the song's valence value (provided by Spotify), the number of "sad" words
             in the lyrics (full credit to
             <a href="http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm">NRC Lexicon project</a> by the National Research
-            Council Canada for providing the Word Emotion Lexicon ) and the song's lyrical density.
+            Council Canada for providing the Word Emotion Lexicon ) and the song's lyrical density. He eloquently called this the Gloom Index and 
+            teh biggest the Gloom Index is, the saddest is the song!
         </p>
         <p>
             I created an REST API service that only need a working Spotify acces_token and an artist's Spotify id to work but there are
-            also a series of options that can alter the outcome. The service, by default, takes into account all the songs
-            with accounted lyrics in the artist's catalogue thus making the response time hard to predict. These alternative
-            options exist as a way of providing a response that can better fit the useres intentions. They are as follows:
+            also a series of options that can alter the outcome. The service, by default, considers all the songs
+            with accounted lyrics in the artist's catalogue viable candidates to get a better (or worst) Gloom Index thus making the response 
+            time hard to predict. These alternative options exist as a way of providing a response that can better fit the useres intentions. They are as follows:
         </p>
         <div layout="row" layout-align="center center">
             <table>
@@ -362,4 +364,5 @@ HEADERS Origin : http://localhost:3000
             <img src="images/github-white.png" />
         </a>
     </div>
+    <md-button ng-click="home.button()" class="md-raised">Button</md-button>
 </div>

@@ -1,4 +1,5 @@
-import request from 'request'
+import request from 'request';
+import firebase from 'firebase';
 
 function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
   'ngInject';
@@ -19,6 +20,65 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
   var accesToken;
   var refreshToken;
   var sadRequest = { id: '', name: '' }
+
+  vm.button = () => {
+    console.log('LOOOOOL')
+
+    var url = 'https://accounts.spotify.com/authorize';
+    url += '?response_type=code';
+    url += '&client_id=' + encodeURIComponent('749748f5ea93499ea4177c896e6adef8');
+    url += '&redirect_uri=' + encodeURIComponent('http://localhost:3000/auth');
+    url += '&state=' + encodeURIComponent('fromapp');
+
+    window.location.replace(url);
+
+    // var config = {
+    //   apiKey: "AIzaSyB42xJH08TpCmIorfCtcIv_q4mdB5DqrIo",
+    //   authDomain: "bread-scraps.firebaseapp.com",
+    //   databaseURL: "https://bread-scraps.firebaseio.com",
+    //   projectId: "bread-scraps",
+    //   storageBucket: "bread-scraps.appspot.com",
+    //   messagingSenderId: "502353067063"
+    // };
+
+    // if (firebase.apps.length === 0) {
+    //   firebase.initializeApp(config);
+    // }
+
+    // var storage = firebase.storage();
+
+    // var gsReference = storage.refFromURL('gs://bread-scraps.appspot.com/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt')
+
+    // gsReference.getDownloadURL().then(function (url) {
+    //   // Insert url into an <img> tag to "download"
+    //   console.log('URL', url)
+    // }).catch(function (error) {
+
+    //   // A full list of error codes is available at
+    //   // https://firebase.google.com/docs/storage/web/handle-errors
+    //   switch (error.code) {
+    //     case 'storage/object_not_found':
+    //       console.log('1')
+    //       break;
+
+    //     case 'storage/unauthorized':
+    //       // User doesn't have permission to access the object
+    //       console.log('2')
+    //       break;
+
+    //     case 'storage/canceled':
+    //       // User canceled the upload
+    //       console.log('3')
+    //       break;
+
+    //     case 'storage/unknown':
+    //       // Unknown error occurred, inspect the server response
+    //       console.log('4')
+    //       break;
+    //   }
+    // });
+
+  }
 
   vm.$onInit = () => {
     accesToken = $cookies.get('bs.spotify_acces_token') ? $cookies.get('bs.spotify_acces_token') : null

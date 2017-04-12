@@ -1,0 +1,12 @@
+<div ng-show="auth.fromApp" layout="row" layout-align="center center">
+    <h1 class="font-pacifico" style="color: white; font-size: 45px;">Bread Scraps</h1>
+</div>
+<div ng-show="auth.fromApp" style="height: 80%" layout="column" layout-align="center center">
+    <md-progress-circular ng-show="auth.loading" md-mode="indeterminate" md-diameter="48"></md-progress-circular>
+    <p style="padding-left: 15px; padding-right: 15px; text-align: center; margin-bottom: 25px;">
+        Excellent! Now just click this box to copy your id and paste it back into the Bread Scraps App.
+    </p>
+    <div class="rounded-panel btn" data-clipboard-text="{{auth.userId}}"> 
+        {{auth.userId}} 
+    </div>
+</div>
