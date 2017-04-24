@@ -20,12 +20,12 @@ function AuthCtrl($location, $cookies, $scope) {
 
     var options = {
       method: 'POST',
-      url: 'http://localhost:8080/api/auth',
+      url: 'https://bs.hugomedina.me/api/auth',
       form: {
         code: code
       },
       headers: {
-        'Origin': 'http://localhost:3000'
+        'Origin': 'https://bread-scraps.firebaseapp.com'
       }
     };
 
@@ -33,12 +33,14 @@ function AuthCtrl($location, $cookies, $scope) {
 
       request(options, (error, response, body) => {
 
+        console.log(response)
+
         var parsedResponse = JSON.parse(body)
         console.log(parsedResponse)
         $cookies.put('bs.spotify_acces_token', parsedResponse.access_token)
         $cookies.put('bs.spotify_refresh_token', parsedResponse.refresh_token)
 
-        window.location.replace('http://localhost:3000');
+        window.location.replace('https://bread-scraps.firebaseapp.com');
       });
     }
     else {
@@ -46,7 +48,7 @@ function AuthCtrl($location, $cookies, $scope) {
       console.log('From app')
       vm.fromApp = true
       vm.userId = 'MBPL3'
-      // vm.loading = true
+      vm.loading = true
 
       request(options, (error, response, body) => {
 

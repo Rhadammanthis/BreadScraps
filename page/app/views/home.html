@@ -18,8 +18,8 @@
     <div style="margin-top: 60px; margin-left: 120px; margin-right: 120px;" layout="row" layout-align="center center">
         <span class="custom-text" style="font-size: 50px;"> 1.- </span>
         <p style="margin-left: 20px; margin-right: 20px;">
-            First login to your Spotify account. I need to get a Spotify acces_token in order to collect special data from the songs
-            (To be honest, I don't really know why this data is token protected)
+            First login to your Spotify account. I need to get a Spotify acces token in order to collect special data from the songs
+            (To be honest, I don't really know why this data is protected)
         </p>
     </div>
     <div style="margin-top: 60px;" layout="row" layout-align="center center">
@@ -39,7 +39,8 @@
         <span class="custom-text" style="font-size: 50px;"> 2.- </span>
         <p style="margin-left: 20px;">
             Almost there! Now just type the name of an Artist into the box an press ENTER. When you find the Artist you where looking
-            for, click on it and wait for the magic to happen.
+            for, click on it and wait for the magic to happen. Just be a little patient with this thing, an average response
+            for any well-known artist might take close to 15 seconds...
         </p>
     </div>
     <div style="margin-top: 60px;">
@@ -63,7 +64,8 @@
                         <img class="img-circle" style="height: 80px; width: 80px;" ng-src="{{ home.getImageURL(artist) }}" />
                     </div>
                     <div flex layout="column" layout-align="center start" style="margin-left: 40px;">
-                        <span class="simple-text font-pacifico" style="font-size: 25px;">{{artist.name}}</span>
+                        <span class="simple-text font-pacifico" style="font-size: 25px; text-overflow: ellipsis;">{{artist.name | limitTo:30}}</span>
+                        <span class="simple-text font-pacifico" ng-show="{{artist.name.length > 30}}">...</span>
                     </div>
                 </div>
             </md-content>
@@ -73,13 +75,13 @@
                     <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
                 </div>
                 <div ng-show="{{home.sadSongs.length > 0}}" layout="row" ng-value="song" ng-repeat="song in home.sadSongs" style="margin-left: 40px; padding: 10px; user-select: none; cursor:context-menu;">
-                    <span class="custom-text" style="font-size: 50px; margin-right: 15px;"> {{$index + 1}} -</span>
+                    <span class="custom-text" style="font-size: 50px; margin-right: 15px; width: 100px;"> {{$index + 1}} -</span>
                     <img style="height: 100px; width: 100px;" src="{{ song.album.imageUrl }}" />
-                    <div flex="50" layout="column" style="margin-left: 40px;">
+                    <div flex layout="column" style="margin-left: 40px;">
                         <span class="simple-text font-pacifico" style="font-size: 30px;">{{song.name}}</span>
                         <apan class="simple-text" style="font-size: 20px;">{{ song.album.name}}</span>
                     </div>
-                    <div layout="column" style="-moz-user-select: none; -ms-user-select: none; user-select: none;" layout-align="center center">
+                    <div flex layout="column" style="-moz-user-select: none; -ms-user-select: none; user-select: none;" layout-align="center center">
                         <i ng-click="home.playSong(song)" class="material-icons orange md-48">play_circle_filled</i>
                     </div>
                 </div>
@@ -100,21 +102,27 @@
     </div>
     <div style="margin-top: 60px; margin-left: 140px; margin-right: 140px;" layout="column">
         <p>
-            All right so, it fairly simple. A couple of months ago I read an <a href="http://rcharlie.com/2017-02-16-fitteR-happieR/#analysis">article</a>
-            by this guy Charly Thompson who happens to be a data analyst. In there he described a formula to analyse the
-            sentiment of a certain song by using the song's valence value (provided by Spotify), the number of "sad" words
-            in the lyrics (full credit to
-            <a href="http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm">NRC Lexicon project</a> by the National Research
-            Council Canada for providing the Word Emotion Lexicon ) and the song's lyrical density. He eloquently called this the Gloom Index and 
-            teh biggest the Gloom Index is, the saddest is the song!
+            All right so, it fairly simple. A couple of months ago I read an <a href="http://rcharlie.com/2017-02-16-fitteR-happieR/#analysis">article</a>            by this guy Charly Thompson who happens to be a data analyst. In there he described a formula to analyse the
+            sentiment of a certain song by using the its valence value (provided by Spotify), the number of "sad" words in
+            the lyrics (I used the <a href="http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm">NRC Lexicon project</a>            by the National Research Council Canada, which is a repository of several words in english and the emotions assosiated
+            with each) and the song's lyrical density. Charly eloquently called this the Gloom Index and the biggest the
+            calculated Gloom Index is, the saddest the song! In the article you can read all his reasoning behind the formula.
         </p>
         <p>
-            I created an REST API service that only need a working Spotify acces_token and an artist's Spotify id to work but there are
-            also a series of options that can alter the outcome. The service, by default, considers all the songs
-            with accounted lyrics in the artist's catalogue viable candidates to get a better (or worst) Gloom Index thus making the response 
-            time hard to predict. These alternative options exist as a way of providing a response that can better fit the useres intentions. They are as follows:
+            I created an REST API service that only needs a working Spotify acces token and an artist's Spotify id and name to work.
+            It calculates the Gloom Index and returns a JSON array of the 10 saddest songs in the artist's catalogue.
         </p>
-        <div layout="row" layout-align="center center">
+        <p>
+            Now, there are some additional options that can alter the service's outcome but, to understand how this happens, you need
+            to understand how the server works. When a valid request is received the sistem looks up all the songs in the
+            provided artist's catalogue in Spotify and wheats out the remixes and live performances, then it looks up the
+            song's lyrics with the <a href="https://genius.com/"> Genius Lyrics </a> API. If the lyrics of a
+            certian song where not found, the service discards it so only the songs with lyrics can be used to calculate
+            their Gloom Index. This is what makes the service a little unpredictable: The search-array size depends on how
+            many songs an artist has and how many of those returned valid lyrics. This is where those additional options
+            come into play, they can be used to alter the server's behavior and the search array size.
+        </p>
+        <div style="margin-top: 10px;" layout="row" layout-align="center center">
             <table>
                 <thead>
                     <tr>
@@ -124,21 +132,27 @@
                         <th style="width: 20%; text-align:left;" flex="20">
                             Value Type
                         </th>
+                        <th style="width: 15%; text-align:left;" flex="15">
+                            Default Value
+                        </th>
                         <th style="width: 40%; text-align:left;" flex="60">
                             Value Description
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr >
+                    <tr>
                         <td class="key">
                             factor_no_lyrics
                         </td>
                         <td class="key">
                             boolean
                         </td>
+                        <td class="key">
+                            false
+                        </td>
                         <td>
-                            When set to true, even the lyrics-less songs would be processed this is however not recommended
+                            When set to true, the Gloom Index is calculated even for the lyrics-less songs. This is, however, not recommended.
                         </td>
                     </tr>
                     <tr>
@@ -148,8 +162,11 @@
                         <td class="key">
                             boolean
                         </td>
+                        <td class="key">
+                            true
+                        </td>
                         <td>
-                             When set to false only the 15 best candidated for a better Gloom Index
+                            When set to false, the Gloom Index is calculated for only the 15 best candidates. This number can be altered with analyse_set_size
                         </td>
                     </tr>
                     <tr>
@@ -159,8 +176,11 @@
                         <td class="key">
                             int
                         </td>
+                        <td class="key">
+                            15
+                        </td>
                         <td>
-                            This alters the size of the best candidates
+                            This alters the size of the search-array when thorough_analysis is false
                         </td>
                     </tr>
                     <tr>
@@ -170,17 +190,136 @@
                         <td class="key">
                             int
                         </td>
+                        <td class="key">
+                            10
+                        </td>
                         <td>
-                            The size of the result array
+                            The number of results in the response JSON
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>
+            Now that you are in the know here's a couple of average response time so you can better grasp how the service behaves
+        </p>
+        <div style="margin-top: 10px; margin-left: 200px; margin-right: 200px;" layout="row" layout-align="center center">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 20%; text-align:left;">
+                            Artist
+                        </th>
+                        <th style="width: 10%; text-align:left;">
+                            Total Songs
+                        </th>
+                        <th style="width: 10%; text-align:left;">
+                            Total Songs With Lyrics
+                        </th>
+                        <th style="width: 10%; text-align:left;">
+                            Average response Time in seconds
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="key">
+                            Lana del Rey
+                        </td>
+                        <td class="key">
+                            57
+                        </td>
+                        <td class="key">
+                            54
+                        </td>
+                        <td>
+                            10.7
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="key">
+                            Radiohead
+                        </td>
+                        <td class="key">
+                            125
+                        </td>
+                        <td class="key">
+                            109
+                        </td>
+                        <td>
+                            16.3
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="key">
+                            Marilyn Manson
+                        </td>
+                        <td class="key">
+                            168
+                        </td>
+                        <td class="key">
+                            137
+                        </td>
+                        <td>
+                            18.6
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="key">
+                            The Weeknd
+                        </td>
+                        <td class="key">
+                            85
+                        </td>
+                        <td class="key">
+                            67
+                        </td>
+                        <td>
+                            13.2
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="key">
+                            Disturbed
+                        </td>
+                        <td class="key">
+                            99
+                        </td>
+                        <td class="key">
+                            93
+                        </td>
+                        <td>
+                            14.5
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="key">
+                            Jack White
+                        </td>
+                        <td class="key">
+                            56
+                        </td>
+                        <td class="key">
+                            37
+                        </td>
+                        <td>
+                            7.1
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div style="margin-top: 40px;" class="separator-horizontal"></div>
+    </div>
+    <div style="margin-top: 60px;">
+        <div layout="row" layout-align="center center">
+            <h1 class="font-pacifico sub-header">Build your own</h1>
+        </div>
+        <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
+    </div>
+    <div style="margin-top: 60px; margin-left: 140px; margin-right: 140px;" layout="column">
         <p style="text-align:left">
-            Now, lets see how all this comes together. Next is a simple request with the necessary data to retieve Lana del Rey's saddest
-            songs:
+            This is how a regular request looks like
         </p>
         <div>
             <pre>
@@ -353,7 +492,8 @@ HEADERS Origin : http://localhost:3000
     "lyricalDensity": 0.9166934705693149,
     "gloomIndex": 0.5103729260833009
   }
-]            </pre>
+]            
+        </pre>
     </div>
     <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
     <div style="height: 150px;" layout="column" layout-align="center center">
@@ -364,5 +504,4 @@ HEADERS Origin : http://localhost:3000
             <img src="images/github-white.png" />
         </a>
     </div>
-    <md-button ng-click="home.button()" class="md-raised">Button</md-button>
 </div>
