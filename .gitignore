@@ -7,6 +7,8 @@ NRC-Emotion-Lexicon-Wordlevel-v0.92.txt
 
 #Page related
 .DS_Store
+firebase.json
+.firebaserc
 
 # Logs
 logs
