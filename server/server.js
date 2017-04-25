@@ -35,6 +35,7 @@ var client_secret = '987de9323c0140cbbc2005bd29d73d54'; // Your secret
 router.post('/auth', (req, res) => {
 
     var code = req.body.code
+    var redirectURL = req.body.redirectUrl
 
     var authOptions = {
         url: 'https://accounts.spotify.com/api/token',
@@ -44,7 +45,7 @@ router.post('/auth', (req, res) => {
         form: {
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'http://localhost:3000/auth'
+            redirect_uri: redirectURL + '/auth'
         },
         json: true
     };
@@ -126,7 +127,6 @@ router.post('/getSaddestSongs', (req, res) => {
             if (asyncError) {
                 res.set('Access-Control-Allow-Origin', '*').status(asyncError.error.status).json(asyncError);
             } else {
-
                 //Array to gold all retrieved songs
                 var songs = []
 
