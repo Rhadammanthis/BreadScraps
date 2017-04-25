@@ -11,21 +11,34 @@ function AuthCtrl($location, $cookies, $scope) {
   vm.fromApp = false
   vm.loading = false
 
+  var endpointURL;
+  var pageURL;
+  
   var clipboard = new Clipboard('.btn');
 
   vm.$onInit = () => {
+
+    if (process.env.NODE_ENV === 'production') {
+      endpointURL = 'https://bs.hugomedina.me';
+      pageURL = 'https://bread-scraps.firebaseapp.com';
+    }
+    else {
+      endpointURL = 'http://localhost:8080';
+      pageURL = 'http://localhost:3000';
+    }
 
     const code = $location.search().code;
     const state = $location.search().state;
 
     var options = {
       method: 'POST',
-      url: 'https://bs.hugomedina.me/api/auth',
+      url: endpointURL + '/api/auth',
       form: {
-        code: code
+        code: code,
+        redirectUrl: pageURL
       },
       headers: {
-        'Origin': 'https://bread-scraps.firebaseapp.com'
+        'Origin': pageURL
       }
     };
 
@@ -40,7 +53,7 @@ function AuthCtrl($location, $cookies, $scope) {
         $cookies.put('bs.spotify_acces_token', parsedResponse.access_token)
         $cookies.put('bs.spotify_refresh_token', parsedResponse.refresh_token)
 
-        window.location.replace('https://bread-scraps.firebaseapp.com');
+        window.location.replace(pageURL);
       });
     }
     else {

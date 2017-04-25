@@ -15,7 +15,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     url: '/',
     controller: 'HomeCtrl as home',
     templateUrl: 'home.html',
-    title: 'Home'
+    title: ''
   });
 
     $stateProvider
@@ -23,7 +23,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     url: '/auth',
     controller: 'AuthCtrl as auth',
     templateUrl: 'auth.html',
-    title: 'Auth'
+    title: ''
   });
 
   $urlRouterProvider.otherwise('/');

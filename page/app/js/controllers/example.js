@@ -21,7 +21,20 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
   var refreshToken;
   var sadRequest = { id: '', name: '' }
 
+  var endpointURL;
+  var pageURL;
+
   vm.$onInit = () => {
+
+    if (process.env.NODE_ENV === 'production') {
+      endpointURL = 'https://bs.hugomedina.me';
+      pageURL = 'https://bread-scraps.firebaseapp.com';
+    }
+    else {
+      endpointURL = 'http://localhost:8080';
+      pageURL = 'http://localhost:3000';
+    }
+
     accesToken = $cookies.get('bs.spotify_acces_token') ? $cookies.get('bs.spotify_acces_token') : null
     refreshToken = $cookies.get('bs.spotify_refresh_token') ? $cookies.get('bs.spotify_refresh_token') : null
     vm.accesToken = accesToken
@@ -65,7 +78,7 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
 
     var options = {
       method: 'POST',
-      url: 'https://bs.hugomedina.me/api/getSaddestSongs',
+      url: endpointURL + '/api/getSaddestSongs',
       form: {
         spotifyToken: accesToken,
         artistId: id,
@@ -75,17 +88,15 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
         // analyse_set_size: 20
       },
       headers: {
-        'Origin': 'https://bread-scraps.firebaseapp.com'
+        'Origin': pageURL
       }
     };
 
     request(options, (error, response, body) => {
       if (error) throw new Error(error);
 
-      console.log(JSON.parse(body))
       if (JSON.parse(body).error) {
         if (JSON.parse(body).error.status == 401) {
-          console.log('no no')
           $scope.$apply(() => {
             vm.loading = false;
             vm.showRefreshButton = true;
@@ -94,7 +105,6 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
       }
       else {
         $scope.$apply(() => {
-          console.log(body)
           vm.sadSongs = JSON.parse(body)
           vm.loading = false;
           vm.showRefreshButton = false;
@@ -105,11 +115,10 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
   }
 
   vm.logToSpotify = () => {
-    console.log('yey!')
     var url = 'https://accounts.spotify.com/authorize';
     url += '?response_type=code';
     url += '&client_id=' + encodeURIComponent('749748f5ea93499ea4177c896e6adef8');
-    url += '&redirect_uri=' + encodeURIComponent('https://bread-scraps.firebaseapp.com/auth');
+    url += '&redirect_uri=' + encodeURIComponent(pageURL + '/auth');
     url += '&state=' + encodeURIComponent('q897yeo');
 
     window.location.replace(url);
@@ -122,12 +131,12 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
 
     var options = {
       method: 'POST',
-      url: 'https://bs.hugomedina.me/api/refresh',
+      url: endpointURL + '/api/refresh',
       form: {
         token: refreshToken
       },
       headers: {
-        'Origin': 'https://bread-scraps.firebaseapp.com'
+        'Origin': pageURL
       }
     };
 
@@ -147,15 +156,11 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
   }
 
   vm.playSong = (song) => {
-    // vm.showPlayer = true;
-    // vm.songId = "https://embed.spotify.com/?uri=spotify%3Atrack%3A" + song.id;
     $window.open(song.externalUrl);
   }
 
   vm.getImageURL = (artist) => {
-
     return artist.images[2] ? artist.images[2].url : "https://assets.audiomack.com/default-artist-image.jpg"
-
   }
 
   vm.getContainerWidth = () => {
