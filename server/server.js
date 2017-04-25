@@ -36,8 +36,6 @@ router.post('/auth', (req, res) => {
 
     var code = req.body.code
 
-    console.log(code)
-
     var authOptions = {
         url: 'https://accounts.spotify.com/api/token',
         headers: {
@@ -91,9 +89,6 @@ router.post('/refresh', (req, res) => {
 
 router.post('/getSaddestSongs', (req, res) => {
 
-    console.time("call");
-    console.time("complete");
-
     //extracts the Spotify token, artist id and artist name from the request body
     spotifyToken = req.body.spotifyToken
     artist = req.body.artistName
@@ -114,8 +109,6 @@ router.post('/getSaddestSongs', (req, res) => {
     analyseSize = req.body.analyse_set_size ? req.body.analyse_set_size : 15
     analizeWholeSet = req.body.thorough_analysis ? (req.body.thorough_analysis == 'true') : true
 
-    console.log('Factor no lyrics', factorNoLyrics)
-
     //Prepares the request to get all the artist's albums
     var options = {
         method: 'GET',
@@ -128,17 +121,14 @@ router.post('/getSaddestSongs', (req, res) => {
 
         var albums = JSON.parse(body).items
 
-        console.time("getSongs");
-
         //Async call to get all the songs from every album
         async.map(albums, getAlbums, (asyncError, asyncResults) => {
             if (asyncError) {
                 res.set('Access-Control-Allow-Origin', '*').status(asyncError.error.status).json(asyncError);
             } else {
-                console.log('Total albums: ', asyncResults.length);
+
                 //Array to gold all retrieved songs
                 var songs = []
-                console.timeEnd("getSongs");
 
                 //Extracts all the songs from every album
                 asyncResults.forEach((album) => {
@@ -150,8 +140,6 @@ router.post('/getSaddestSongs', (req, res) => {
                         })
                 })
 
-                console.time("filter");
-
                 //Discards all songs that have a 'valence' property and that are not remixes or live performances
                 var bestCandidates = _.uniqBy(songs.filter((song) => {
                     if (song.hasOwnProperty('valence') && song.valence > 0 && !(song.name.includes("Rmx") || song.name.includes("RMX") || song.name.includes("Remix") || song.name.includes("REMIX") || song.name.includes("Live") || song.name.includes("Reprise")))
@@ -161,27 +149,15 @@ router.post('/getSaddestSongs', (req, res) => {
                     return a.valence - b.valence;
                 })
 
-                console.timeEnd("filter");
-
-                console.timeEnd("call");
-
                 //If true, the array is reduced to the specified size
                 if(analizeWholeSet === false)
                     bestCandidates = bestCandidates.slice(0, analyseSize);
-
-                console.log('Total Songs: ', bestCandidates.length)
 
                 //Async call to get the saddest songs from the search size
                 async.map(bestCandidates, getSaddestSongs, (qError, qResult) => {
                     if (qError)
                         res.send(qError)
                     else {
-                        console.log('Total valid songs: ', qResult.filter((song) => {
-                            if (song && song != null)
-                                return true
-                            return false
-                        }).length)
-                        console.timeEnd("complete");
 
                         //Filters all the empty objects out, arranges the items from highest
                         //to lowest Gloom Index and slices the array at the specified size 
@@ -365,8 +341,6 @@ var loadSadWords = () => {
         }
     });
 
-    console.log('Sadness loaded with ', sadWords.length);
-
     return sadWords;
 }
 
@@ -409,8 +383,6 @@ var scoreLyrics = (song) => {
             }
         });
 
-        console.log('%s sad out of %s in %s, so thats a %s', sadWordCount, wordCount, song.name, (sadWordCount / wordCount))
-
         //Caluclates the pecentage of sad words in the lyrics
         var pctSad = sadWordCount / wordCount
 
@@ -431,7 +403,6 @@ var scoreLyrics = (song) => {
         //if there where no lyrics, we asign an low arbitrary value to the necessary
         //parameters to calculate the song's Gloom Index
         song.gloomIndex = ((1 - song.valence) + (0.001 * (1 + 0.001))) / 2
-        console.log('Gloom index for non lyrics %s: %2', song.name, song.gloomIndex)
         
         return song
     }
@@ -442,7 +413,6 @@ var scoreLyrics = (song) => {
 var normalizeText = (text) => {
     return text.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, "")
 }
-
 
 app.use('/api', router);
 
