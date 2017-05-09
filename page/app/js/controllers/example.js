@@ -1,7 +1,7 @@
 import request from 'request';
 import firebase from 'firebase';
 
-function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
+function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDialog, $mdMedia) {
   'ngInject';
 
   // ViewModel
@@ -16,6 +16,8 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
   vm.counter = 0
 
   vm.songId = "63hHlajVLQnlFMAqSyePxO"
+
+  vm.bigScreen;
 
   var accesToken;
   var refreshToken;
@@ -38,6 +40,8 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
     accesToken = $cookies.get('bs.spotify_acces_token') ? $cookies.get('bs.spotify_acces_token') : null
     refreshToken = $cookies.get('bs.spotify_refresh_token') ? $cookies.get('bs.spotify_refresh_token') : null
     vm.accesToken = accesToken
+
+    vm.smallScreen = !$mdMedia('gt-sm')
   }
 
   vm.searchArtist = () => {
@@ -70,6 +74,19 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
 
   vm.loadSaddestSongs = (id, name) => {
 
+    if (accesToken === null) {
+      $mdDialog.show(
+        $mdDialog.alert()
+          .parent(angular.element(document.querySelector('#popupContainer')))
+          .clickOutsideToClose(true)
+          .title('You forgot to login with Spotify! Go back to step 1 and do it.')
+          .ariaLabel('Alert Dialog Demo')
+          .ok('Got it!')
+      );
+
+      return;
+    }
+
     sadRequest.id = id;
     sadRequest.name = name
 
@@ -100,6 +117,12 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window) {
           $scope.$apply(() => {
             vm.loading = false;
             vm.showRefreshButton = true;
+          })
+        }
+        else {
+          $scope.$apply(() => {
+            vm.loading = false;
+            console.log('My name is error', JSON.parse(body).error)
           })
         }
       }

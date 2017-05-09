@@ -1,4 +1,4 @@
-function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compileProvider) {
+function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compileProvider, $mdThemingProvider) {
   'ngInject';
 
   if (process.env.NODE_ENV === 'production') {
@@ -16,9 +16,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
     controller: 'HomeCtrl as home',
     templateUrl: 'home.html',
     title: ''
-  });
-
-    $stateProvider
+  })
   .state('Auth', {
     url: '/auth',
     controller: 'AuthCtrl as auth',
@@ -27,6 +25,10 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider, $compil
   });
 
   $urlRouterProvider.otherwise('/');
+
+  $mdThemingProvider.theme('default')
+    .primaryPalette('deep-orange')
+    .accentPalette('deep-orange');
 
 }
 

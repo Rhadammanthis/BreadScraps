@@ -11,8 +11,16 @@ md-progress-circular svg path {
   stroke: #FF7F00 ; 
 }
 
+a {
+  color: #FF7F00;
+}
+
 .material-icons.md-48 { 
   font-size: 48px; 
+}
+
+.material-icons.md-24 { 
+  font-size: 24px; 
 }
 
 .material-icons.orange { 
@@ -23,8 +31,8 @@ md-progress-circular svg path {
   user-select: none; 
 }
 
-.material-icons:hover{
-  color: #ff9022;
+.material-icons.white { 
+  color: white;
 }
 
 .material-icons:active{
@@ -91,6 +99,16 @@ md-toolbar.admin {
 .sub-header {
   color: white;
   font-size: 55px;
+}
+
+.header-small {
+  color: white;
+  font-size: 55px;
+}
+
+.sub-header-small {
+  color: white;
+  font-size: 35px;
 }
 
 .spotify-button{
@@ -175,6 +193,9 @@ md-toolbar.admin {
 
 md-content{
   background-color: #191414;
+}
+
+md-content{
   overflow: hidden;
 }
 
@@ -301,4 +322,32 @@ tr:nth-child(even){
 
 tr{
   color: white;
+}
+
+tbody{
+  overflow-x: auto
+}
+
+.lol{
+  min-width: 50px
+}
+
+#songs .ng-hide-add-active {
+  display: block!important;
+  -webkit-transition: 0.5s linear all;
+  transition: 0.5s linear all;
+}
+#songs .ng-hide-remove-active {
+  display: block!important;
+  -webkit-transition: 0.5s linear all;
+  transition: 0.5s linear all;
+  -webkit-transition-delay: 0.5s;
+  transition-delay: 0.5s;
+}
+#songs .ng-hide {
+  opacity: 0;
+}
+
+.scrollabale-table{
+  overflow-x: scroll
 }

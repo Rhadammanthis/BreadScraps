@@ -1,26 +1,32 @@
 <div class="main-body">
     <div layout="row" layout-align="center center">
-        <h1 class="font-pacifico header">Bread Scraps</h1>
+        <h1 hide show-gt-sm class="font-pacifico header">Bread Scraps</h1>
+        <h1 hide-gt-sm class="font-pacifico header-small">Bread Scraps</h1>
     </div>
     <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
-    <div style="margin-top: 60px; margin-left: 140px; margin-right: 140px;" layout="row" layout-align="center center">
-        <p>
-            Don't you ever feel like listening to sad music? I know I do, so I created a simple API service that does exactly that: return
-            a list of the saddest songs by any artist!.
-        </p>
+    <div style="margin-top: 60px" layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row" layout-align="center center">
+            <p>
+                Don't you ever feel like listening to sad music? I know I do, so I created a simple API service that does exactly that: return
+                a list of the saddest songs by any artist!.
+            </p>
+        </div>
     </div>
     <div style="margin-top: 60px;">
         <div layout="row" layout-align="center center">
-            <h1 class="font-pacifico sub-header">Try it out!</h1>
+            <h1 hide show-gt-sm class="font-pacifico sub-header">Try it out!</h1>
+            <h1 hide-gt-sm class="font-pacifico sub-header-small">Try it out!</h1>
         </div>
         <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
     </div>
-    <div style="margin-top: 60px; margin-left: 120px; margin-right: 120px;" layout="row" layout-align="center center">
-        <span class="custom-text" style="font-size: 50px;"> 1.- </span>
-        <p style="margin-left: 20px; margin-right: 20px;">
-            First login to your Spotify account. I need to get a Spotify acces token in order to collect special data from the songs
-            (To be honest, I don't really know why this data is protected)
-        </p>
+    <div style="margin-top: 60px;" layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row" layout-align="center center">
+            <span class="custom-text" style="font-size: 40px;"> 1.- </span>
+            <p style="margin-left: 20px; margin-right: 20px;">
+                First login to your Spotify account. I need to get a Spotify acces token in order to collect special data from the songs
+                (To be honest, I don't really know why this data is protected)
+            </p>
+        </div>
     </div>
     <div style="margin-top: 60px;" layout="row" layout-align="center center">
         <div style="width: 270px;" ng-click="home.logToSpotify()" class="spotify-button" layout="row">
@@ -35,13 +41,16 @@
         Token ready!
     </div>
     <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 60px;" class="accent"> </div>
-    <div style="margin-top: 60px; margin-left: 120px; margin-right: 120px;" layout="row" layout-align="center center">
-        <span class="custom-text" style="font-size: 50px;"> 2.- </span>
-        <p style="margin-left: 20px;">
-            Almost there! Now just type the name of an Artist into the box an press ENTER. When you find the Artist you where looking
-            for, click on it and wait for the magic to happen. Just be a little patient with this thing, an average response
-            for any well-known artist might take close to 15 seconds...
-        </p>
+    <div style="margin-top: 60px;" layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row" layout-align="center center">
+            <span class="custom-text" style="font-size: 40px;"> 2.- </span>
+            <p style="margin-left: 20px;">
+                Almost there! Now just type the name of an Artist into the box an press <span hide show-gt-sm> ENTER</span>
+                <span hide-gt-sm> the SEARCH button </span>. When you find the Artist you where looking
+                for, click on it and wait for the magic to happen. Just be a little patient with this thing, an average response
+                for any well-known artist might take close to 15 seconds...
+            </p>
+        </div>
     </div>
     <div style="margin-top: 60px;">
         <div layout="row" layout-align="center center">
@@ -49,43 +58,82 @@
                 <div layout="column" layout-align="center center">
                     <i class="material-icons">search</i>
                 </div>
-                <form ng-submit='home.searchArtist()'>
+                <form hide show-gt-sm ng-submit='home.searchArtist()'>
                     <input type="text" placeholder="Artist" class="input-rounded" ng-model="home.search" />
                 </form>
+                <input hide-gt-sm type="text" placeholder="Artist" class="input-rounded" ng-model="home.search" />
+            </div>
+            <div hide-gt-sm layout="column" layout-align="center center" class="refresh-button" style="margin-left: 10px;" ng-click="home.searchArtist()">
+                <i class="material-icons white">search</i>
             </div>
         </div>
     </div>
     <div style="margin-top: 40px;" ng-show="home.artistRequested">
-        <div layout="row" layout-align="center center" class="songs-container" style="margin-left: 10px; margin-right: 10px;">
+        <div hide show-gt-sm class="font-pacifico sub-header" layout="row" layout-align="center center" class="songs-container" style="margin-left: 10px; margin-right: 10px;">
             <md-content class="c1" flex="30" style="height: 500px; padding-right: 10px;">
-                <div class="artist-container" ng-click="home.loadSaddestSongs(artist.id, artist.name)" layout="row" style="  padding: 5px; height: 100px"
+                <div class="artist-container" ng-click="home.loadSaddestSongs(artist.id, artist.name)" layout="row" style="padding: 5px; height: 100px"
                     ng-value="artist" ng-repeat="artist in home.artists">
                     <div layout="column" layout-align="center start">
-                        <img class="img-circle" style="height: 80px; width: 80px;" ng-src="{{ home.getImageURL(artist) }}" />
+                        <img class="img-circle" style="height: 80px; width: 80px; object-fit: cover;" ng-src="{{ home.getImageURL(artist) }}" />
                     </div>
-                    <div flex layout="column" layout-align="center start" style="margin-left: 40px;">
-                        <span class="simple-text font-pacifico" style="font-size: 25px; text-overflow: ellipsis;">{{artist.name | limitTo:30}}</span>
-                        <span class="simple-text font-pacifico" ng-show="{{artist.name.length > 30}}">...</span>
+                    <div flex layout="row" layout-align="start center" style="margin-left: 40px;">
+                        <span class="simple-text font-pacifico" style="font-size: 25px; text-overflow: ellipsis;">{{artist.name | limitTo:25}}<span ng-show="{{artist.name.length > 25}}">...</span></span>
+                        <span style="width: 50px; opacity: 0"> offset </span>
                     </div>
                 </div>
             </md-content>
             <div class="separator-vertical"></div>
-            <md-content class="c1" flex="60" style="height: 500px; margin-left: 50px">
+            <md-content class="c1" flex="60" style="height: 500px; margin-left: 50px; padding-right: 10px; margin-right: 10px;">
                 <div style="height: 500px;" ng-show="home.loading" layout="row" flex layout-align="center center">
                     <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
                 </div>
-                <div ng-show="{{home.sadSongs.length > 0}}" layout="row" ng-value="song" ng-repeat="song in home.sadSongs" style="margin-left: 40px; padding: 10px; user-select: none; cursor:context-menu;">
+                <div id="songs" ng-show="{{home.sadSongs.length > 0}}" layout="row" ng-value="song" ng-repeat="song in home.sadSongs" style="margin-left: 40px; padding: 10px; user-select: none; cursor:context-menu; margin-right: 10px;">
                     <span class="custom-text" style="font-size: 50px; margin-right: 15px; width: 100px;"> {{$index + 1}} -</span>
-                    <img style="height: 100px; width: 100px;" src="{{ song.album.imageUrl }}" />
+                    <img style="height: 100px; width: 100px; object-fit: cover;" src="{{ song.album.imageUrl }}" />
                     <div flex layout="column" style="margin-left: 40px;">
                         <span class="simple-text font-pacifico" style="font-size: 30px;">{{song.name}}</span>
                         <apan class="simple-text" style="font-size: 20px;">{{ song.album.name}}</span>
                     </div>
-                    <div flex layout="column" style="-moz-user-select: none; -ms-user-select: none; user-select: none;" layout-align="center center">
+                    <div flex layout="row" style="-moz-user-select: none; -ms-user-select: none; user-select: none; width: 150px;" layout-align="center center">
                         <i ng-click="home.playSong(song)" class="material-icons orange md-48">play_circle_filled</i>
+                        <span style="width: 50px; opacity: 0"> offset </span>
                     </div>
                 </div>
                 <div style="height: 500px;" ng-show="home.showRefreshButton" layout="row" flex layout-align="center center">
+                    <div class="refresh-button" ng-click="home.refreshToken()">
+                        Refresh Spotify Token
+                    </div>
+                </div>
+            </md-content>
+        </div>
+        <div hide-gt-sm layout="column" style="width: 100%;">
+            <md-content class="c1" flex="90" style="height: 300px; padding-right: 10px; padding-left: 10px; width: 90%; overflow: auto">
+                <div class="artist-container" ng-click="home.loadSaddestSongs(artist.id, artist.name)" layout="row" style="padding: 5px; height: 80px"
+                    ng-value="artist" ng-repeat="artist in home.artists">
+                    <div layout="column" layout-align="center start">
+                        <img class="img-circle" style="height: 60px; width: 60px; object-fit: cover;" ng-src="{{ home.getImageURL(artist) }}" />
+                    </div>
+                    <div flex layout="row" layout-align="start center" style="margin-left: 20px;">
+                        <span class="simple-text font-pacifico" style="font-size: 25px; text-overflow: ellipsis;">{{artist.name | limitTo:20}}<span ng-show="{{artist.name.length > 20}}">...</span></span>
+                        <span style="width: 50px; opacity: 0"> offset </span>
+                    </div>
+                </div>
+            </md-content>
+            <div class="separator-horizontal"></div>
+            <md-content class="c1" flex="90" style="height: 300px; padding-right: 10px; width: 90%; overflow: auto">
+                <div style="height: 300px;" ng-show="home.loading" layout="row" flex layout-align="center center">
+                    <md-progress-circular md-mode="indeterminate" md-diameter="60"></md-progress-circular>
+                </div>
+                <div id="songs" ng-show="{{home.sadSongs.length > 0}}" layout="row" ng-value="song" ng-repeat="song in home.sadSongs" style="margin-left: 10px; padding: 10px; user-select: none; cursor:context-menu; margin-right: 10px;">
+                    <span class="custom-text" style="font-size: 30px; margin-right: 10px; width: 50px;"> {{$index + 1}} -</span>
+                    <img style="height: 60px; width: 60px; object-fit: cover;" src="{{ song.album.imageUrl }}" />
+                    <div flex layout="column" style="margin-left: 20px;">
+                        <span class="simple-text font-pacifico" style="font-size: 18px;">{{song.name}}</span>
+                        <apan class="simple-text" style="font-size: 15px;">{{ song.album.name}}</span>
+                    </div>
+                    <span style="width: 20px; opacity: 0"> offset </span>
+                </div>
+                <div style="height: 300px;" ng-show="home.showRefreshButton" layout="row" flex layout-align="center center">
                     <div class="refresh-button" ng-click="home.refreshToken()">
                         Refresh Spotify Token
                     </div>
@@ -96,46 +144,60 @@
     </div>
     <div style="margin-top: 60px;">
         <div layout="row" layout-align="center center">
-            <h1 class="font-pacifico sub-header">How does this work?</h1>
+            <h1 hide show-gt-sm class="font-pacifico sub-header">How does this work?</h1>
+            <h1 hide-gt-sm class="font-pacifico sub-header-small">How does this work?</h1>
         </div>
         <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
     </div>
-    <div style="margin-top: 60px; margin-left: 140px; margin-right: 140px;" layout="column">
-        <p>
-            All right so, it fairly simple. A couple of months ago I read an <a href="http://rcharlie.com/2017-02-16-fitteR-happieR/#analysis">article</a>            by this guy Charly Thompson who happens to be a data analyst. In there he described a formula to analyse the
-            sentiment of a certain song by using the its valence value (provided by Spotify), the number of "sad" words in
-            the lyrics (I used the <a href="http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm">NRC Lexicon project</a>            by the National Research Council Canada, which is a repository of several words in english and the emotions assosiated
-            with each) and the song's lyrical density. Charly eloquently called this the Gloom Index and the biggest the
-            calculated Gloom Index is, the saddest the song! In the article you can read all his reasoning behind the formula.
-        </p>
-        <p>
-            I created an REST API service that only needs a working Spotify acces token and an artist's Spotify id and name to work.
-            It calculates the Gloom Index and returns a JSON array of the 10 saddest songs in the artist's catalogue.
-        </p>
-        <p>
-            Now, there are some additional options that can alter the service's outcome but, to understand how this happens, you need
-            to understand how the server works. When a valid request is received the sistem looks up all the songs in the
-            provided artist's catalogue in Spotify and wheats out the remixes and live performances, then it looks up the
-            song's lyrics with the <a href="https://genius.com/"> Genius Lyrics </a> API. If the lyrics of a
-            certian song where not found, the service discards it so only the songs with lyrics can be used to calculate
-            their Gloom Index. This is what makes the service a little unpredictable: The search-array size depends on how
-            many songs an artist has and how many of those returned valid lyrics. This is where those additional options
-            come into play, they can be used to alter the server's behavior and the search array size.
-        </p>
-        <div style="margin-top: 10px;" layout="row" layout-align="center center">
+    <div style="margin-top: 60px" layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row" layout-align="center center">
+            <p>
+                All right so, it fairly simple. A couple of months ago I read an <a href="http://rcharlie.com/2017-02-16-fitteR-happieR/#analysis">article</a>                by this guy Charly Thompson who happens to be a data analyst. In there he described a formula to analyse
+                the sentiment of a certain song by using the its valence value (provided by Spotify), the number of "sad"
+                words in the lyrics (I used the <a href="http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm">NRC Lexicon project</a>                by the National Research Council Canada, which is a repository of several words in english and the emotions
+                assosiated with each) and the song's lyrical density. Charly eloquently called this the Gloom Index and the
+                biggest the calculated Gloom Index is, the saddest the song! In the article you can read all his reasoning
+                behind the formula.
+            </p>
+        </div>
+    </div>
+    <div layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row" layout-align="center center">
+            <p>
+                I created an REST API service that only needs a working Spotify acces token and an artist's Spotify id and name to work.
+                It calculates the Gloom Index and returns a JSON array of the 10 saddest songs in the artist's catalogue.
+            </p>
+        </div>
+    </div>
+    <div layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row" layout-align="center center">
+            <p>
+                Now, there are some additional options that can alter the service's outcome but, to understand how this happens, you need
+                to understand how the server works. When a valid request is received the sistem looks up all the songs in
+                the provided artist's catalogue in Spotify and wheats out the remixes and live performances, then it looks
+                up the song's lyrics with the <a href="https://genius.com/"> Genius Lyrics </a> API. If the
+                lyrics of a certian song where not found, the service discards it so only the songs with lyrics can be used
+                to calculate their Gloom Index. This is what makes the service a little unpredictable: The search-array size
+                depends on how many songs an artist has and how many of those returned valid lyrics. This is where those
+                additional options come into play, they can be used to alter the server's behavior and the search array size.
+            </p>
+        </div>
+    </div>
+    <div layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row" ng-class="{'scrollabale-table': home.smallScreen}">
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 20%; text-align:left;" flex="20">
+                        <th style="width: 20%; text-align:left;">
                             Key
                         </th>
-                        <th style="width: 20%; text-align:left;" flex="20">
+                        <th style="width: 20%; text-align:left;">
                             Value Type
                         </th>
-                        <th style="width: 15%; text-align:left;" flex="15">
+                        <th style="width: 15%; text-align:left;">
                             Default Value
                         </th>
-                        <th style="width: 40%; text-align:left;" flex="60">
+                        <th style="width: 40%; text-align:left;">
                             Value Description
                         </th>
                     </tr>
@@ -200,10 +262,16 @@
                 </tbody>
             </table>
         </div>
-        <p>
-            Now that you are in the know here's a couple of average response time so you can better grasp how the service behaves
-        </p>
-        <div style="margin-top: 10px; margin-left: 200px; margin-right: 200px;" layout="row" layout-align="center center">
+    </div>
+    <div layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row">
+            <p>
+                Now that you are in the know here's a couple of average response time so you can better grasp how the service behaves
+            </p>
+        </div>
+    </div>
+    <div layout="row" layout-align="center center">
+        <div flex-gt-sm="70" flex="90" layout="row">
             <table>
                 <thead>
                     <tr>
@@ -309,30 +377,33 @@
                 </tbody>
             </table>
         </div>
-        <div style="margin-top: 40px;" class="separator-horizontal"></div>
     </div>
     <div style="margin-top: 60px;">
         <div layout="row" layout-align="center center">
-            <h1 class="font-pacifico sub-header">Build your own</h1>
+            <h1 hide show-gt-sm class="font-pacifico sub-header">Build your own</h1>
+            <h1 hide-gt-sm class="font-pacifico sub-header-small">Build your own</h1>
         </div>
         <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
     </div>
-    <div style="margin-top: 60px; margin-left: 140px; margin-right: 140px;" layout="column">
-        <p style="text-align:left">
-            This is how a regular request looks like
-        </p>
-        <div>
-            <pre>
+    <div layout="row" flex style="width: 100%;">
+        <div flex-gt-sm="15" flex="5">
+        </div>
+        <div flex style="margin-top: 60px;" layout="column" style="background-color: green">
+            <p style="text-align:left">
+                This is how a regular request looks like
+            </p>
+            <div>
+                <pre>
 POST    https://bs.hugomedina.me/api/getSaddestSongs
 FORM    spotifyToken = 5fe0128...
         artistId = 00FQb4jTyendYWaN8pK0wa
         artistName = Lana+del+Rey
             </pre>
-        </div>
-        <p>
-            And a response would look like this:
-        </p>
-        <pre style="height: 300px; overflow-y:scroll;">
+            </div>
+            <p>
+                And a response would look like this:
+            </p>
+            <pre style="height: 300px; overflow-y:scroll;">
 [
   {
     "name": "Body Electric",
@@ -445,7 +516,10 @@ FORM    spotifyToken = 5fe0128...
     "gloomIndex": 0.5103729260833009
   }
 ]            
-        </pre>
+            </pre>
+        </div>
+        <div flex-gt-sm="15" flex="5">
+        </div>
     </div>
     <div style="height: 2px; margin-left: 120px; margin-right: 120px; margin-top: 20px;" class="accent"> </div>
     <div style="height: 150px;" layout="column" layout-align="center center">
