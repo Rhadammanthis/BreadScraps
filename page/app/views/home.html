@@ -81,6 +81,9 @@
                         <span style="width: 50px; opacity: 0"> offset </span>
                     </div>
                 </div>
+                <div layout="column" layout-align="center center" ng-show="home.noArtistFound" style="height: 100%">
+                    <span class="simple-text" style="font-size: 30px;">No artists were found with that name :(</span>
+                </div>
             </md-content>
             <div class="separator-vertical"></div>
             <md-content class="c1" flex="60" style="height: 500px; margin-left: 50px; padding-right: 10px; margin-right: 10px;">
@@ -107,7 +110,7 @@
             </md-content>
         </div>
         <div hide-gt-sm layout="column" style="width: 100%;">
-            <md-content class="c1" flex="90" style="height: 300px; padding-right: 10px; padding-left: 10px; width: 90%; overflow: auto">
+            <md-content class="c1" flex style="height: 300px; padding-right: 10px; padding-left: 10px; width: 90%; overflow: auto">
                 <div class="artist-container" ng-click="home.loadSaddestSongs(artist.id, artist.name)" layout="row" style="padding: 5px; height: 80px"
                     ng-value="artist" ng-repeat="artist in home.artists">
                     <div layout="column" layout-align="center start">
@@ -118,9 +121,12 @@
                         <span style="width: 50px; opacity: 0"> offset </span>
                     </div>
                 </div>
+                <div layout="column" layout-align="center center" ng-show="home.noArtistFound" style="height: 100%">
+                    <span class="simple-text" style="font-size: 30px; padding-left: 15px;">No artists were found with that name :(</span>
+                </div>
             </md-content>
             <div class="separator-horizontal"></div>
-            <md-content class="c1" flex="90" style="height: 300px; padding-right: 10px; width: 90%; overflow: auto">
+            <md-content class="c1" flex style="height: 300px; padding-right: 10px; width: 90%; overflow: auto">
                 <div style="height: 300px;" ng-show="home.loading" layout="row" flex layout-align="center center">
                     <md-progress-circular md-mode="indeterminate" md-diameter="60"></md-progress-circular>
                 </div>

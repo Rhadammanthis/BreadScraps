@@ -14,6 +14,7 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDia
   vm.showPlayer = false
   vm.accesToken = null
   vm.counter = 0
+  vm.noArtistFound
 
   vm.songId = "63hHlajVLQnlFMAqSyePxO"
 
@@ -61,6 +62,11 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDia
         vm.artists = JSON.parse(body).artists.items
         vm.artistRequested = true;
         $anchorScroll('songs-container');
+
+        if(vm.artists.length === 0)
+          vm.noArtistFound = true
+
+        console.log(vm.noArtistFound)
 
         deferred.resolve();
 
