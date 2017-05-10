@@ -38,6 +38,17 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDia
       pageURL = 'http://localhost:3000';
     }
 
+    var config = {
+      apiKey: "AIzaSyB42xJH08TpCmIorfCtcIv_q4mdB5DqrIo",
+      authDomain: "bread-scraps.firebaseapp.com",
+      databaseURL: "https://bread-scraps.firebaseio.com",
+      projectId: "bread-scraps",
+      storageBucket: "bread-scraps.appspot.com",
+      messagingSenderId: "502353067063"
+    };
+
+    firebase.initializeApp(config);
+
     accesToken = $cookies.get('bs.spotify_acces_token') ? $cookies.get('bs.spotify_acces_token') : null
     refreshToken = $cookies.get('bs.spotify_refresh_token') ? $cookies.get('bs.spotify_refresh_token') : null
     vm.accesToken = accesToken
@@ -63,7 +74,7 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDia
         vm.artistRequested = true;
         $anchorScroll('songs-container');
 
-        if(vm.artists.length === 0)
+        if (vm.artists.length === 0)
           vm.noArtistFound = true
 
         console.log(vm.noArtistFound)
@@ -128,7 +139,17 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDia
         else {
           $scope.$apply(() => {
             vm.loading = false;
-            console.log('My name is error', JSON.parse(body).error)
+
+            $mdDialog.show(
+              $mdDialog.alert()
+                .parent(angular.element(document.querySelector('#popupContainer')))
+                .clickOutsideToClose(true)
+                .title('Something failed... Please try again later.')
+                .ariaLabel('Alert Dialog Demo')
+                .ok('OK')
+            );
+
+            saveResponse(false, name)
           })
         }
       }
@@ -137,10 +158,25 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDia
           vm.sadSongs = JSON.parse(body)
           vm.loading = false;
           vm.showRefreshButton = false;
+          saveResponse(true, name)
         })
       }
 
     });
+  }
+
+  var saveResponse = (status, artist) => {
+
+    var statusRef = status === true ? 'succes' : 'failed'
+
+    firebase.database().ref(`/responses/${statusRef}`)
+      .push(artist)
+      .then(() => {
+        $scope.$apply(() => {
+          vm.loading = false
+          vm.userId = user.trackId
+        })
+      });
   }
 
   vm.logToSpotify = () => {
