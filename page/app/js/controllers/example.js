@@ -76,6 +76,8 @@ function HomeCtrl($q, $cookies, $scope, $anchorScroll, $mdToast, $window, $mdDia
 
         if (vm.artists.length === 0)
           vm.noArtistFound = true
+        else
+          vm.noArtistFound = false
 
         console.log(vm.noArtistFound)
 
