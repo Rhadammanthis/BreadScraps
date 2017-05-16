@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import _ from 'lodash';
-// import { Actions } from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 import {
     ID_CHANGED,
     ACCES_DATA
@@ -23,6 +23,8 @@ export const requestAccesData = (code) => {
                 })
                 // console.log(userAccesData[0])
                 dispatch({ type: ACCES_DATA, payload: userAccesData[0] });
+
+                Actions.artists();
             })
     }
 };

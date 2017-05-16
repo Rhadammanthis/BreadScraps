@@ -32,18 +32,16 @@ class Login extends Component {
         var url = 'https://accounts.spotify.com/authorize';
         url += '?response_type=code';
         url += '&client_id=' + encodeURIComponent('749748f5ea93499ea4177c896e6adef8');
-        url += '&redirect_uri=' + encodeURIComponent('http://192.168.15.21:3000/auth');
+        url += '&redirect_uri=' + encodeURIComponent('https://bread-scraps.firebaseapp.com/auth');
         url += '&state=' + encodeURIComponent('fromapp');
 
         Linking.openURL(url);
         this.setState({ shouldRenderInput: true })
-        //'http://192.168.1.71:3000'
     }
 
     renderInput() {
-        if (this.state.shouldRenderInput) {
+        // if (this.state.shouldRenderInput) {
             return (
-
                 <View style={{ flexDirection: 'row', marginTop: 15 }}>
                     <TextInput
                         style={{
@@ -58,7 +56,7 @@ class Login extends Component {
                     />
                 </View>
             );
-        }
+        // }
 
     }
 
@@ -72,24 +70,26 @@ class Login extends Component {
         const { headerStyle, headerContainer, bodyContainer, instructions, input } = styles;
 
         return (
-            <View style={{ flex: 1 }}>
-                <View style={headerContainer}>
-                    <Text style={headerStyle}> Bread Scraps </Text>
+            <ScrollView style={{ flex: 1 }}>
+                <View style={{ flex: 1 }}>
+                    <View style={headerContainer}>
+                        <Text style={headerStyle}> Bread Scraps </Text>
+                    </View>
+                    <View style={bodyContainer}>
+                        <Text style={instructions}>
+                            We need you to sign in to your Spotify account.
+                            Just press the button and comeback once you're finished
+                        </Text>
+                        <Button
+                            onPress={this.onButtonPress.bind(this)}
+                            title="Login to Spotify"
+                            accessibilityLabel="See an informative alert"
+                            color="#1DB954"
+                        />
+                        {this.renderInput()}
+                    </View>
                 </View>
-                <View style={bodyContainer}>
-                    <Text style={instructions}>
-                        We need you to sign in to your Spotify account.
-                        Just press the button and comeback once you're finished
-                    </Text>
-                    <Button
-                        onPress={this.onButtonPress.bind(this)}
-                        title="Login to Spotify"
-                        accessibilityLabel="See an informative alert"
-                        color="#1DB954"
-                    />
-                    {this.renderInput()}
-                </View>
-            </View>
+            </ScrollView>
         );
     }
 }

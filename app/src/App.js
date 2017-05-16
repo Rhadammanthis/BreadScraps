@@ -5,8 +5,9 @@ import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
 import ReduxThunk from 'redux-thunk';
 import reducers from './reducers';
-import Header from './components/common/Header';
-import Login from './components/Login'
+import Router from './Router';
+// import Header from './components/common/Header';
+// import Login from './components/Login'
 
 class App extends Component {
 
@@ -28,11 +29,12 @@ class App extends Component {
 
         return (
             <Provider store={store}>
-                <View style={{ backgroundColor: '#191414', flex: 1 }}>
-                    {/*<Text> THERE IS BONES IN THE CHOCOLATE </Text>
-                    <Form />*/}
+                {/*<View style={{ backgroundColor: '#191414', flex: 1 }}>
+                    <Text> THERE IS BONES IN THE CHOCOLATE </Text>
+                    <Form />
                     <Login />
-                </View>
+                </View>*/}
+                <Router />
             </Provider>
         );
     }
